@@ -32,30 +32,41 @@ export default defineConfig({
 
 
   projects: [
-    { name: 'setup', testMatch: /auth\.setup\.ts/ },
+  { name: 'setup', testMatch: /auth\.setup\.ts/ },
 
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/user.json' },
-      dependencies: ['setup'],
-    },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'], storageState: 'playwright/.auth/user.json' },
-      dependencies: ['setup'],
-      grep: /@smoke/,
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'], storageState: 'playwright/.auth/user.json' },
-      dependencies: ['setup'],
-      grep: /@smoke/,
-    },
-    {
-      name: 'mobile-chrome',
-      use: { ...devices['Pixel 5'], storageState: 'playwright/.auth/user.json' },
-      dependencies: ['setup'],
-      grep: /@smoke/,
-    },
-  ],
+  {
+    name: 'api',
+    testDir: './tests/api',
+    // No dependency on 'setup' — these tests authenticate themselves via AuthApi.login()
+    // or need no auth at all, so they never touch a browser or Cloudflare's challenge.
+  },
+
+  {
+    name: 'chromium',
+    testDir: './tests/e2e',
+    use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/user.json' },
+    dependencies: ['setup'],
+  },
+  {
+    name: 'firefox',
+    testDir: './tests/e2e',
+    use: { ...devices['Desktop Firefox'], storageState: 'playwright/.auth/user.json' },
+    dependencies: ['setup'],
+    grep: /@smoke/,
+  },
+  {
+    name: 'webkit',
+    testDir: './tests/e2e',
+    use: { ...devices['Desktop Safari'], storageState: 'playwright/.auth/user.json' },
+    dependencies: ['setup'],
+    grep: /@smoke/,
+  },
+  {
+    name: 'mobile-chrome',
+    testDir: './tests/e2e',
+    use: { ...devices['Pixel 5'], storageState: 'playwright/.auth/user.json' },
+    dependencies: ['setup'],
+    grep: /@smoke/,
+  },
+],
 });
